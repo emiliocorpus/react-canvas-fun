@@ -12,7 +12,10 @@ export default class ReactFun extends React.Component {
   constructor(props, context) {
     super(props, context);
     
-    this.addMouseListen = this.addMouseListen.bind(this)
+
+    this.state = {
+      points: []
+    }
   }
 
   componentDidMount() {
@@ -26,19 +29,9 @@ export default class ReactFun extends React.Component {
 
 
   addMouseListen(canvas) {
-    var points = []
-    function writeMessage(canvas, message) {
-            var context = canvas.getContext('2d');
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.font = '12pt Calibri';
-            context.fillStyle = 'black';
-            context.fillText(message, 10, 25);
-            context.imageSmoothingEnabled = false;
-    }
 
     function drawLine(canvas, points) {
         var context = canvas.getContext('2d')
-        context.clearRect(0,0, canvas.width, canvas.height)
         context.strokeStyle="#FF0000";
         context.beginPath();
         context.moveTo(points[0].x, points[0].y);
@@ -58,11 +51,15 @@ export default class ReactFun extends React.Component {
 
     canvas.addEventListener('mousemove', function(evt) {
       var mousePos = getMousePos(canvas, evt);
-      points.push(mousePos)
-      // var message = 'Mouse position: ' + "x: " + mousePos.x + ', y:' + mousePos.y;
-      // writeMessage(canvas, message);
-      drawLine(canvas, points)
-    }, false)
+      var array = this.state.points
+      array.push(mousePos)
+      this.setState({
+        points:array
+      })
+      drawLine(canvas, this.state.points)
+
+      // bind(this) so state can be accessed
+    }.bind(this), false)
 
   }
 
