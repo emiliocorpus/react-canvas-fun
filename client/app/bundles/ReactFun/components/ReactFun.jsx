@@ -7,10 +7,7 @@ import _ from 'lodash';
 
 // Simple example of a React "dumb" component
 export default class ReactFun extends React.Component {
-  static propTypes = {
-  
-  
-  };
+
 
   constructor(props, context) {
     super(props, context);
@@ -21,23 +18,34 @@ export default class ReactFun extends React.Component {
   componentDidMount() {
       let canvas = ReactDOM.findDOMNode(this.refs.myCanvas);
       let ctx = canvas.getContext('2d');
-      canvas.width  = 400;
-      canvas.height = 300; 
-      canvas.style.width  = '800px';
-      canvas.style.height = '600px';
+      canvas.width  = 720;
+      canvas.height = 500; 
       this.addMouseListen(canvas)
       
   }
 
 
   addMouseListen(canvas) {
-
+    var points = []
     function writeMessage(canvas, message) {
             var context = canvas.getContext('2d');
             context.clearRect(0, 0, canvas.width, canvas.height);
-            context.font = '18pt Calibri';
+            context.font = '12pt Calibri';
             context.fillStyle = 'black';
             context.fillText(message, 10, 25);
+            context.imageSmoothingEnabled = false;
+    }
+
+    function drawLine(canvas, points) {
+        var context = canvas.getContext('2d')
+        context.clearRect(0,0, canvas.width, canvas.height)
+        context.strokeStyle="#FF0000";
+        context.beginPath();
+        context.moveTo(points[0].x, points[0].y);
+        for (var i =1;i <points.length;i++) {
+          context.lineTo(points[i].x,points[i].y)
+        }
+        context.stroke();
     }
 
     function getMousePos(canvas, evt) {
@@ -50,30 +58,21 @@ export default class ReactFun extends React.Component {
 
     canvas.addEventListener('mousemove', function(evt) {
       var mousePos = getMousePos(canvas, evt);
-      var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-      writeMessage(canvas, message);
+      points.push(mousePos)
+      // var message = 'Mouse position: ' + "x: " + mousePos.x + ', y:' + mousePos.y;
+      // writeMessage(canvas, message);
+      drawLine(canvas, points)
     }, false)
 
   }
 
-  
-
-  
-
-  writeMessage(canvas, message) {
-          var context = canvas.getContext('2d');
-          context.clearRect(0, 0, canvas.width, canvas.height);
-          context.font = '18pt Calibri';
-          context.fillStyle = 'black';
-          context.fillText(message, 10, 25);
-  }
 
   render() {
     return (
       <div className="container">
 
 
-          <canvas ref="myCanvas" className="debugger-green" />
+          <canvas ref="myCanvas" className="my-canvas debugger-green" />
 
       </div>
     );
